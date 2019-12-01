@@ -3,10 +3,12 @@ package application;
 import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -14,6 +16,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,12 +27,26 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+/**
+ * Adapted things from Java's Using JavaFX UI Controlss
+ * 
+ * @author
+ *
+ */
 public class Main extends Application {
-  private List<String> args;
+  private TableView<Person> table = new TableView<Person>();
+  // This is just an
+  // example for what
+  // we could use but
+  // we will probably
+  // change it later
+  private final ObservableList<Person> data = FXCollections.observableArrayList(
+      new Person("Joe", "Smoe", "Joe@example.com"), new Person("Smoe", "Joe", "Smoe@example.com"));
 
   @Override
   public void start(Stage stage) {
@@ -36,7 +54,9 @@ public class Main extends Application {
     Text password = new Text("Password");
 
     TextField user = new TextField(); // Field to type username and password into
+    user.setPromptText("Just click Submit");
     TextField pass = new TextField();
+    pass.setPromptText("Just click Submit");
 
     Button submit = new Button("Submit");
     Button forgot = new Button("Forgot Password");
@@ -117,7 +137,7 @@ public class Main extends Application {
     // and will require its own method in the future to load user information
 
     BorderPane home = new BorderPane();
-    Label name = new Label("Harrison"); // Take user name
+    Label name = new Label("Harrison Bell"); // Take username
     name.setFont(Font.font("Arial", FontWeight.BOLD, 24));
     home.setAlignment(name, Pos.TOP_CENTER);
     home.setStyle("-fx-background-color: white");
@@ -144,6 +164,50 @@ public class Main extends Application {
     VBox.setMargin(friends, new Insets(0, 0, 0, 8));
     vbox.getChildren().add(friends); // Possibly add a small friends scene
 
+
+
+    // Scene five to show friends
+    BorderPane group = new BorderPane();
+    group.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+    Scene scene5 = new Scene(group, 430, 450);
+    final Label label = new Label("Friends");
+
+    group.setAlignment(label, Pos.TOP_CENTER);
+    label.setFont(Font.font("Courier", FontWeight.BOLD, 20));
+
+    table.setEditable(true);
+
+    TableColumn firstName = new TableColumn("First Name");
+    firstName.setMinWidth(100);
+    firstName.setCellValueFactory(new PropertyValueFactory<Person, String>("firstName"));
+
+    TableColumn lastName = new TableColumn("Last Name");
+    lastName.setMinWidth(100);
+    lastName.setCellValueFactory(new PropertyValueFactory<Person, String>("lastName"));
+
+    TableColumn email = new TableColumn("Email");
+    email.setMinWidth(200);
+    email.setCellValueFactory(new PropertyValueFactory<Person, String>("email"));
+
+    table.setItems(data);
+    table.getColumns().addAll(firstName, lastName, email);
+
+    final VBox vList = new VBox();
+    vList.setSpacing(5);
+    vList.setPadding(new Insets(10, 0, 0, 10));
+    vList.getChildren().addAll(table);
+    table.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+
+
+    group.setTop(label);
+    group.setCenter(vList);
+    group.setLeft(new Label("ADS"));
+    group.setRight(new Label("ADS"));
+    group.setBottom(new Label("ADS"));
+    // ((Group) scene5.getRoot()).getChildren().addAll(vList);
+
+
+
     Button addFriend = new Button("Add Friend"); // Add a scene with a search function
     addFriend.setStyle("-fx-background-color: white");
     addFriend.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -160,7 +224,8 @@ public class Main extends Application {
 
     Text title2 = new Text("Recomended"); // Show a random list of people from the list that are not
                                           // already friends with the user possibly show relations
-                                          // to users friends Will probably take out or drastically change this
+                                          // to users friends Will probably take out or drastically
+                                          // change this
     title2.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     title2.setFill(Color.WHITE);
     VBox.setMargin(title2, new Insets(10, 0, 0, 0));
@@ -218,7 +283,7 @@ public class Main extends Application {
 
     // Scene 4
     // Account creation not sure what fields will exist yet so for now it is closed
-    
+
     Label creat =
         new Label("Sorry no more accounts can be \n created go back and hit submit \n please");
 
@@ -238,12 +303,49 @@ public class Main extends Application {
     submit.setOnAction(e -> stage.setScene(scene3));
     exit.setOnAction(e -> stage.setScene(scene));
     createAcc.setOnAction(e -> stage.setScene(scene4));
+    friends.setOnAction(e -> stage.setScene(scene5));
     // addFriend.setOnAction(e -> vbox.getChildren().add(combo)):
   }
 
   public static void main(String args[]) {
     launch(args);
   }
-}
 
+  public static class Person {
+
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+
+    private Person(String fName, String lName, String email) {
+      this.firstName = (fName);
+      this.lastName = (lName);
+      this.email = (email);
+    }
+
+    public String getFirstName() {
+      return firstName;
+    }
+
+    // public void setFirstName(String fName) {
+    // firstName.set(fName);
+    // }
+
+    public String getLastName() {
+      return lastName;
+    }
+
+    // public void setLastName(String fName) {
+    // lastName.set(fName);
+    // }
+
+    public String getEmail() {
+      return email;
+    }
+
+    // public void setEmail(String fName) {
+    // email.set(fName);
+    // }
+  }
+}
 
