@@ -51,37 +51,32 @@ public class Main extends Application {
   @Override
   public void start(Stage stage) {
     Text username = new Text("Username"); // Create username and password text
-    Text password = new Text("Password");
-
     TextField user = new TextField(); // Field to type username and password into
-    user.setPromptText("Just click Submit");
+    user.setPromptText("Just click Submit"); // Will change these later
+    Text password = new Text("Password");
     TextField pass = new TextField();
     pass.setPromptText("Just click Submit");
 
     Button submit = new Button("Submit");
     Button forgot = new Button("Forgot Password");
 
-    GridPane gridPane = new GridPane();
-
-    gridPane.setMinSize(250, 150); // Make grid right size
+    GridPane login = new GridPane();
+    login.setMinSize(250, 150); // Make grid right size
 
     // Set the gradient to the login page
-    gridPane.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+    login.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
 
-    // Setting the vertical and horizontal gaps between the columns
-    gridPane.setVgap(5);
-    gridPane.setHgap(5);
+    // Setting up the spacing and layout of the login page
+    login.setVgap(5);
+    login.setHgap(5);
+    login.setAlignment(Pos.CENTER);
 
-    // Setting the alignment
-    gridPane.setAlignment(Pos.CENTER);
-
-    // Arranging all the nodes in the grid
-    gridPane.add(username, 0, 0);
-    gridPane.add(user, 1, 0);
-    gridPane.add(password, 0, 1);
-    gridPane.add(pass, 1, 1);
-    gridPane.add(submit, 0, 2);
-    gridPane.add(forgot, 1, 2);
+    login.add(username, 0, 0);
+    login.add(user, 1, 0);
+    login.add(password, 0, 1);
+    login.add(pass, 1, 1);
+    login.add(submit, 0, 2);
+    login.add(forgot, 1, 2);
 
     BorderPane layout = new BorderPane(); // Main login scene
     layout.setStyle("-fx-background-color: darkblue");
@@ -95,10 +90,10 @@ public class Main extends Application {
     layout.setAlignment(image, Pos.TOP_CENTER);
     layout.setTop(image);
 
-    layout.setCenter(gridPane);
+    layout.setCenter(login);
 
     // Button on login page to create new account
-    Button createAcc = new Button("Create"); // ADD SCENE
+    Button createAcc = new Button("Create"); // FINISH SCENE
     createAcc.setStyle("-fx-background-color: white");
     createAcc.setFont(Font.font("Arial", FontWeight.BOLD, 10));
     createAcc.setPadding(new Insets(5, 106, 5, 110));
@@ -117,7 +112,7 @@ public class Main extends Application {
 
     // New scene
     // This scene will appear if help button is pressed
-    // This should eventually become its own method
+    // Could be seperated and fixed
 
     Label label2 =
         new Label("Please Call this Number:\n 000-000-0000 \nif you have forgotten your password");
@@ -130,11 +125,10 @@ public class Main extends Application {
     Scene scene2 = new Scene(layout2, 200, 100);
 
 
-    // Scene 3
+    // Users main page scene
     // This scene will represent a users main page
     // it will likely hold a lot more information
     // ex Friend count, images, posting ability etc.
-    // and will require its own method in the future to load user information
 
     BorderPane home = new BorderPane();
     Label name = new Label("Harrison Bell"); // Take username
@@ -143,12 +137,12 @@ public class Main extends Application {
     home.setStyle("-fx-background-color: white");
     home.setTop(name);
 
-    ImageView images = new ImageView();
+    ImageView images = new ImageView(); // Profile pic would exist in create new account
     Image picer = new Image("me.png");
     images.setImage(picer);
     home.setCenter(images);
 
-    VBox vbox = new VBox();
+    VBox vbox = new VBox(); // Side panel
     vbox.setPadding(new Insets(10));
     vbox.setSpacing(8);
     vbox.setStyle("-fx-background-color: darkblue ");
@@ -162,21 +156,23 @@ public class Main extends Application {
     friends.setStyle("-fx-background-color: white");
     friends.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(friends, new Insets(0, 0, 0, 8));
-    vbox.getChildren().add(friends); // Possibly add a small friends scene
+    vbox.getChildren().add(friends); // Possibly add a small friends scene to show their pages
+                                    // Also add a back button
 
 
 
     // Scene five to show friends
-    BorderPane group = new BorderPane();
-    group.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
-    Scene scene5 = new Scene(group, 430, 450);
+    BorderPane showFriends = new BorderPane();
+    showFriends.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+    Scene scene5 = new Scene(showFriends, 430, 450);
     final Label label = new Label("Friends");
 
-    group.setAlignment(label, Pos.TOP_CENTER);
+    showFriends.setAlignment(label, Pos.TOP_CENTER);
     label.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
     table.setEditable(true);
 
+    // All of this will be formatted differently in order to accommodate a graph
     TableColumn firstName = new TableColumn("First Name");
     firstName.setMinWidth(100);
     firstName.setCellValueFactory(new PropertyValueFactory<Person, String>("firstName"));
@@ -198,23 +194,21 @@ public class Main extends Application {
     vList.getChildren().addAll(table);
     table.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
 
+    showFriends.setTop(label);
+    showFriends.setCenter(vList);
+    showFriends.setLeft(new Label("ADS")); // LOL
+    showFriends.setRight(new Label("ADS"));
+    showFriends.setBottom(new Label("ADS"));
 
-    group.setTop(label);
-    group.setCenter(vList);
-    group.setLeft(new Label("ADS"));
-    group.setRight(new Label("ADS"));
-    group.setBottom(new Label("ADS"));
-    // ((Group) scene5.getRoot()).getChildren().addAll(vList);
-
-
-
-    Button addFriend = new Button("Add Friend"); // Add a scene with a search function
+    // Add a scene with a search function This could show a list of the users in the graph and let
+    // the main user add a connection to them
+    Button addFriend = new Button("Add Friend");
     addFriend.setStyle("-fx-background-color: white");
     addFriend.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(addFriend, new Insets(0, 0, 0, 8));
     vbox.getChildren().add(addFriend); // add new scene
 
-    Button removeFr = new Button("Remove Friend"); // Go to scene or combo box with list of friends
+    Button removeFr = new Button("Remove Friend"); // Go to scene with list of friends
                                                    // and delete from it
     removeFr.setStyle("-fx-background-color: white");
     removeFr.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -234,7 +228,7 @@ public class Main extends Application {
 
 
     String f[] = {"f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f",
-        "f", "f", "f"};
+        "f", "f", "f"}; // Example recommended list
 
     // Create a combo box
     ComboBox combo = new ComboBox(FXCollections.observableArrayList(f));
@@ -244,7 +238,7 @@ public class Main extends Application {
     basic.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     basic.setTextFill(Color.WHITE);
 
-    Button buttey = new Button("booty"); // Example button to add user
+    Button buttey = new Button("booty"); // Example button to add user will probably remove
 
     combo.getItems().add(buttey);
 
@@ -252,6 +246,7 @@ public class Main extends Application {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         basic.setText(combo.getValue() + ""); // Instead of print it will have button to add user
+                                              // this will basically be the add user button
       }
     };
     combo.setOnAction(event);
@@ -259,19 +254,6 @@ public class Main extends Application {
 
     vbox.getChildren().add(combo);
     vbox.getChildren().add(basic);
-
-
-
-    // Label firee = new Label("Add");
-    // firee.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    // firee.setTextFill(Color.WHITE);
-    // HBox fire = new HBox();
-    // fire.setMargin(firee, new Insets(0, 0, 10, 0));
-    // fire.setMargin(combo, new Insets(0, 0, 0, 10));
-    // fire.getChildren().add(firee);
-    // fire.getChildren().add(combo);
-    //
-    // vbox.getChildren().add(fire);
 
     Button exit = new Button("LOGOUT"); // Returns to login screen
     exit.setStyle("-fx-background-color: red; -fx-font-weight: bold");
@@ -289,7 +271,6 @@ public class Main extends Application {
 
     BorderPane createe = new BorderPane();
     createe.setCenter(creat);
-    // createe.setBottom(exit);
     createe.setStyle("-fx-background-color: linear-gradient(to top , CYAN, ROYALBLUE)");
 
     Scene scene4 = new Scene(createe, 200, 100);
@@ -304,22 +285,23 @@ public class Main extends Application {
     exit.setOnAction(e -> stage.setScene(scene));
     createAcc.setOnAction(e -> stage.setScene(scene4));
     friends.setOnAction(e -> stage.setScene(scene5));
-    // addFriend.setOnAction(e -> vbox.getChildren().add(combo)):
+
   }
 
   public static void main(String args[]) {
     launch(args);
   }
 
-  public static class Person {
+  public static class Person { // This is an example Person class I don't think anymore needs to be
+                               // added hear
 
     private final String firstName;
     private final String lastName;
     private final String email;
 
-    private Person(String fName, String lName, String email) {
-      this.firstName = (fName);
-      this.lastName = (lName);
+    private Person(String fN, String lN, String email) {
+      this.firstName = (fN);
+      this.lastName = (lN);
       this.email = (email);
     }
 
@@ -327,25 +309,13 @@ public class Main extends Application {
       return firstName;
     }
 
-    // public void setFirstName(String fName) {
-    // firstName.set(fName);
-    // }
-
     public String getLastName() {
       return lastName;
     }
 
-    // public void setLastName(String fName) {
-    // lastName.set(fName);
-    // }
-
     public String getEmail() {
       return email;
     }
-
-    // public void setEmail(String fName) {
-    // email.set(fName);
-    // }
   }
 }
 
