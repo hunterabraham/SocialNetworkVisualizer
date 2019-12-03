@@ -1,34 +1,21 @@
 package application;
 
 import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Application;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -77,13 +64,9 @@ public class Main extends Application {
     logout.setPadding(new Insets(3, 22, 3, 20));
     logout.setOnAction(e -> stage.close());
 
-    Label userr = new Label(user.getText());
-
     Button submit = new Button("Submit");
     Button forgot = new Button("  Forgot Username   ");
     forgot.setPadding(new Insets(5, 25, 5, 25));
-
-    System.out.print(userr);
 
     GridPane login = new GridPane();
     login.setMinSize(250, 150); // Make grid right size
@@ -106,24 +89,7 @@ public class Main extends Application {
     login.add(submit, 0, 1);
     login.add(forgot, 1, 1);
 
-    // BorderPane layout = new BorderPane(); // Main login scene
-    // layout.setStyle("-fx-background-color: darkblue");
-    //
-    // // Add logo????
-    //// ImageView image = new ImageView();
-    //// Image pic = new Image("eye.png");
-    //// image.setFitHeight(40);
-    //// image.setFitWidth(50);
-    //// image.setImage(pic);
-    //// layout.setAlignment(image, Pos.TOP_CENTER);
-    //// layout.setTop(image);
-    //
-    // layout.setCenter(login);
-
-    // Button on login page to create new account
-
-    // layout.setAlignment(createAcc, Pos.BOTTOM_CENTER);
-    // layout.setBottom(createAcc);
+    
 
 
 
@@ -229,27 +195,10 @@ public class Main extends Application {
     VBox.setMargin(addFriend, new Insets(0, 0, 0, 8));
     vbox.getChildren().add(addFriend); // add new scene
 
-
-
-    // BorderPane addFriends = new BorderPane();
-    // addFriends.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
-    // Scene scene6 = new Scene(showFriends, 450, 450);
-    // Label label1 = new Label("All Members");
-    //
-    // addFriends.setAlignment(label1, Pos.TOP_CENTER);
-    // label1.setFont(Font.font("Courier", FontWeight.BOLD, 20));
-    //
-    // table.setEditable(true);
-    //
-    // TableColumn addName = new TableColumn("Username");
-    // addName.setMinWidth(150);
-    // addName.setCellValueFactory(new PropertyValueFactory<Person, String>("userName"));
-    //
-    //
     BorderPane addFriends = new BorderPane();
     addFriends.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
-    Scene scene6 = new Scene(addFriends, 450, 450);
     final Label labelOther = new Label("All People");
+    labelOther.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
     addFriends.setAlignment(labelOther, Pos.TOP_CENTER);
     label.setFont(Font.font("Courier", FontWeight.BOLD, 20));
@@ -274,7 +223,7 @@ public class Main extends Application {
     addFriends.setTop(labelOther);
     addFriends.setCenter(vList2);
 
-
+    Scene scene6 = new Scene(addFriends, 450, 450);
     addFriend.setOnAction(e -> stage.setScene(scene6));
 
     Button removeFr = new Button("Remove Friend"); // Go to scene with list of friends
@@ -283,46 +232,6 @@ public class Main extends Application {
     removeFr.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(removeFr, new Insets(0, 0, 0, 8));
     vbox.getChildren().add(removeFr); // add new scene
-
-
-    Text title2 = new Text("Recomended"); // Show a random list of people from the list that are not
-                                          // already friends with the user possibly show relations
-                                          // to users friends Will probably take out or drastically
-                                          // change this
-    title2.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    title2.setFill(Color.WHITE);
-    VBox.setMargin(title2, new Insets(10, 0, 0, 0));
-    vbox.getChildren().add(title2);
-
-
-
-    String f[] = {"f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f",
-        "f", "f", "f"}; // Example recommended list
-
-    // Create a combo box
-    ComboBox combo = new ComboBox(FXCollections.observableArrayList(f));
-
-    // Label to display the selected menuitem
-    Label basic = new Label("No Friend Selected");
-    basic.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    basic.setTextFill(Color.WHITE);
-
-    Button buttey = new Button("booty"); // Example button to add user will probably remove
-
-    combo.getItems().add(buttey);
-
-    // Create action event
-    EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        basic.setText(combo.getValue() + ""); // Instead of print it will have button to add user
-                                              // this will basically be the add user button
-      }
-    };
-    combo.setOnAction(event2);
-    combo.setStyle("-fx-background-color: white");
-
-    vbox.getChildren().add(combo);
-    vbox.getChildren().add(basic);
 
     Button exit = new Button("LOGOUT"); // Returns to login screen
     exit.setStyle("-fx-background-color: red; -fx-font-weight: bold");
@@ -378,7 +287,6 @@ public class Main extends Application {
     };
     submit.setOnAction(event4);
 
-
     // exit.setOnAction(e -> stage.setScene(scene));
     EventHandler<ActionEvent> event5 = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -389,7 +297,6 @@ public class Main extends Application {
     };
     exit.setOnAction(event5);
 
-
     // createAcc.setOnAction(e -> stage.setScene(scene4));
     EventHandler<ActionEvent> event6 = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -399,7 +306,6 @@ public class Main extends Application {
       }
     };
     createAcc.setOnAction(event6);
-
 
     // friends.setOnAction(e -> stage.setScene(scene5));
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
@@ -420,7 +326,6 @@ public class Main extends Application {
       }
     };
     X.setOnAction(event7);
-
 
   }
 
@@ -466,7 +371,8 @@ public class Main extends Application {
     tableMain.getColumns().add(goToPageCol);
   }
 
-  private void goToAdd(Stage stage, Scene main, TableView<Person> tableMain, TableView<Person> table) {
+  private void goToAdd(Stage stage, Scene main, TableView<Person> tableMain,
+      TableView<Person> table) {
     Scene scene = stage.getScene();
     TableColumn<Person, Void> goToPageCol = new TableColumn("User Page"); // This is the column that
                                                                           // holds the button to go
@@ -481,7 +387,6 @@ public class Main extends Application {
 
               {
                 addFriendPage.setOnAction((ActionEvent event) -> {
-
                 });
               }
 
@@ -500,7 +405,7 @@ public class Main extends Application {
         };
     goToPageCol.setCellFactory(cell);
 
-    tableMain.getColumns().add(goToPageCol);
+    table.getColumns().add(goToPageCol);
   }
 
   /**
@@ -546,8 +451,6 @@ public class Main extends Application {
     vbox.getChildren().add(friends); // Possibly add a small friends scene to show their pages
                                      // Also add a back button
 
-
-
     // Scene five to show friends
     BorderPane showFriends = new BorderPane();
     showFriends.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
@@ -563,10 +466,6 @@ public class Main extends Application {
     TableColumn userName = new TableColumn("Username");
     userName.setMinWidth(150);
     userName.setCellValueFactory(new PropertyValueFactory<Person, String>("userName"));
-
-    // TableColumn email = new TableColumn("Email");
-    // email.setMinWidth(150);
-    // email.setCellValueFactory(new PropertyValueFactory<Person, String>("email"));
 
     tableMain.setItems(dataMain);
     tableMain.getColumns().addAll(userName);
@@ -604,46 +503,6 @@ public class Main extends Application {
     VBox.setMargin(removeFr, new Insets(0, 0, 0, 8));
     vbox.getChildren().add(removeFr); // add new scene
 
-
-    // Text title2 = new Text("Recomended"); // Show a random list of people from the list that are
-    // // not
-    // // already friends with the user possibly show relations
-    // // to users friends Will probably take out or drastically
-    // // change this
-    // title2.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    // title2.setFill(Color.WHITE);
-    // VBox.setMargin(title2, new Insets(10, 0, 0, 0));
-    // vbox.getChildren().add(title2);
-    //
-    //
-    //
-    // String f[] = {"f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f",
-    // "f", "f", "f"}; // Example recommended list
-    //
-    // // Create a combo box
-    // ComboBox combo = new ComboBox(FXCollections.observableArrayList(f));
-    //
-    // // Label to display the selected menuitem
-    // Label basic = new Label("No Friend Selected");
-    // basic.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    // basic.setTextFill(Color.WHITE);
-    //
-    // Button buttey = new Button("booty"); // Example button to add user will probably remove
-    //
-    // combo.getItems().add(buttey);
-    //
-    // // Create action event
-    // EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-    // public void handle(ActionEvent e) {
-    // basic.setText(combo.getValue() + ""); // Instead of print it will have button to add user
-    // // this will basically be the add user button
-    // }
-    // };
-    // combo.setOnAction(event);
-    // combo.setStyle("-fx-background-color: white");
-    //
-    // vbox.getChildren().add(combo);
-    // vbox.getChildren().add(basic);
 
     Button exit = new Button("X"); // Returns to login screen
     exit.setStyle("-fx-background-color: red; -fx-font-weight: bold");
