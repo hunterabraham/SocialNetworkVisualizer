@@ -153,6 +153,7 @@ public class Main extends Application {
         if (!loadText.getText().equals("")) {
           loadFile(loadText.getText());
         }
+        user.setPromptText(centralUser);
         stage.setScene(loginScene);
       }
     };
@@ -166,6 +167,8 @@ public class Main extends Application {
             // previous = stage.getScene();
             loadUser(user.getText(), stage, loginScene);
           }
+        } else {
+          user.setText(centralUser);
         }
       }
     };
@@ -339,10 +342,12 @@ public class Main extends Application {
     home.setTop(name);
     home.setBottom(backButton);
 
-    // ImageView images = new ImageView(); // Profile pic would exist in create new account
-    // Image picer = new Image("me.png");
-    // images.setImage(picer);
-    // home.setCenter(images);
+     ImageView images = new ImageView(); // Profile pic would exist in create new account
+     images.setFitHeight(300);
+     images.setFitWidth(400);
+     Image picture = new Image("me.png");
+     images.setImage(picture);
+     home.setCenter(images);
 
     VBox vbox = new VBox(); // Side panel
     vbox.setPadding(new Insets(10));
