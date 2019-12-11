@@ -1,7 +1,6 @@
 package application;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -45,6 +42,9 @@ public class Main extends Application {
   SocialNetwork network = new SocialNetwork(); // Main network of friends
   String centralUser = ""; // Starting user
   ArrayList<Scene> previous = new ArrayList<Scene>();// Stores previous scene
+  String log = ""; // Keep a log of all changes to network
+  Button goodbye = new Button("Exiting without saving, Goodbye"); // Exit without saving button
+  Button goodbyeSave = new Button("Successful Save"); // Exit with saving button
 
   /**
    * Start the GUI
@@ -134,7 +134,7 @@ public class Main extends Application {
     Label loadLabel = new Label("Load New File ");
 
     TextField loadText = new TextField();
-    loadText.setText("example.txt or just click cubmit");
+    loadText.setText("example.txt or just clear text and submit");
 
     loadLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     Button submitFile = new Button("Submit");
@@ -190,8 +190,7 @@ public class Main extends Application {
         previous.add(stage.getScene());
         if (!loadText.getText().equals("")) {
           if (!loadFile(loadText.getText())) {
-            Label errorLabel =
-                new Label("EXCEPTION OCCURED WITH READING FILE TRY DIFFERENT FILE");
+            Label errorLabel = new Label("EXCEPTION OCCURED WITH READING FILE TRY DIFFERENT FILE");
             errorLabel.setStyle("-fx-background-color: red");
             errorLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
             Stage errorMessage = new Stage();
@@ -445,7 +444,8 @@ public class Main extends Application {
       }
     }
     TableView<Person> tableMain = new TableView<Person>();
-    // This will eventually just find the user in the graph and read the connections
+    tableMain.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     ObservableList<Person> dataMain =
         FXCollections.observableArrayList(network.getFriendList(user));
 
@@ -454,19 +454,12 @@ public class Main extends Application {
     backButton.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 
     BorderPane home = new BorderPane();
-    Label name = new Label(user); // Take username
+    Label name = new Label(user + "'s Friends"); // Take username
     name.setFont(Font.font("Arial", FontWeight.BOLD, 24));
     home.setAlignment(name, Pos.TOP_CENTER);
     home.setStyle("-fx-background-color: white");
     home.setTop(name);
     home.setBottom(backButton);
-
-    ImageView images = new ImageView(); // Profile pic would exist in create new account
-    images.setFitHeight(300);
-    images.setFitWidth(400);
-    Image picture = new Image("me.png");
-    images.setImage(picture);
-    home.setCenter(tableMain);
 
     VBox homeVbox = new VBox(); // Side panel
     homeVbox.setPadding(new Insets(10));
@@ -482,24 +475,14 @@ public class Main extends Application {
     viewFriends.setStyle("-fx-background-color: white");
     viewFriends.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(viewFriends, new Insets(0, 0, 0, 8));
-  //  homeVbox.getChildren().add(viewFriends); // Possibly add a small friends scene to show their
-                                             // pages
-    // Also add a back button
-
-    // Scene five to show friends
-    BorderPane showFriends = new BorderPane();
-    showFriends.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
-    Scene scene5 = new Scene(showFriends, 450, 450);
-    final Label label = new Label("Friends");
-
-    showFriends.setAlignment(label, Pos.TOP_CENTER);
-    label.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
     tableMain.setEditable(true);
 
     // All of this will be formatted differently in order to accommodate a graph
     TableColumn userName = new TableColumn("Username");
-    userName.setMinWidth(150);
+    userName.setMinWidth(100);
+    userName.setMaxWidth(100);
+
     userName.setCellValueFactory(new PropertyValueFactory<Person, String>("userName"));
 
     tableMain.setItems(dataMain);
@@ -507,21 +490,15 @@ public class Main extends Application {
     goTo(stage, tableMain);
     viewMutuals(stage, tableMain, mainUser);
 
-    final VBox vList = new VBox();
-    vList.setSpacing(5);
-    vList.setPadding(new Insets(10, 0, 0, 10));
-    vList.getChildren().addAll(tableMain);
-    tableMain.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+    final VBox tableOfFriends = new VBox();
+    tableOfFriends.setSpacing(5);
+    tableOfFriends.setPadding(new Insets(10, 0, 0, 10));
+    tableOfFriends.getChildren().addAll(tableMain);
+    tableMain.setStyle("-fx-background-color: white");
 
     Button backButtonOther = new Button("BACK");
     backButtonOther.setStyle("-fx-background-color: red");
     backButtonOther.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-
-    showFriends.setTop(label);
-    showFriends.setCenter(vList);
-    showFriends.setLeft(new Label("ADS")); // LOL
-    showFriends.setRight(new Label("ADS"));
-    showFriends.setBottom(backButtonOther);
 
     // Add a scene with a search function This could show a list of the users in the graph and
     // let
@@ -539,10 +516,11 @@ public class Main extends Application {
     labelOther.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
     addFriends.setAlignment(labelOther, Pos.TOP_CENTER);
-    label.setFont(Font.font("Courier", FontWeight.BOLD, 20));
+    labelOther.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
 
     TableView<Person> allTable = new TableView<Person>();
+    allTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
     ArrayList<Person> temp = network.get();
     ArrayList<Person> temp_1 = network.getFriendList(user);
@@ -589,6 +567,7 @@ public class Main extends Application {
 
 
     TableView<Person> tableMainRemove = new TableView<Person>();
+    tableMainRemove.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     ObservableList<Person> dataMainRemove =
         FXCollections.observableArrayList(network.getFriendList(user));
 
@@ -597,7 +576,7 @@ public class Main extends Application {
     Scene removeFriendsScene = new Scene(remove, 450, 450);
     final Label label_remove = new Label("Remove Friends");
 
-    remove.setAlignment(label, Pos.TOP_CENTER);
+    remove.setAlignment(label_remove, Pos.TOP_CENTER);
     label_remove.setFont(Font.font("Courier", FontWeight.BOLD, 20));
 
     tableMainRemove.setEditable(true);
@@ -630,21 +609,12 @@ public class Main extends Application {
 
     home.setLeft(homeVbox);
     home.setBottom(backButton);
-    home.setCenter(vList);
+    home.setCenter(tableOfFriends);
 
     Scene userScene = new Scene(home, 500, 500);
     stage.setScene(userScene);
 
     // These are all the event handlers for the buttons
-
-    EventHandler<ActionEvent> viewFriendsEvent = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        previous.add(stage.getScene());
-
-        stage.setScene(scene5);
-      }
-    };
-    viewFriends.setOnAction(viewFriendsEvent);
 
     EventHandler<ActionEvent> backBut = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -818,9 +788,15 @@ public class Main extends Application {
     return true;
   }
 
-
+  /**
+   * Dumb method to view the mutual friends of two users that we don't even need but here you go
+   * 
+   * @param stage
+   * @param tableMain
+   * @param mainUser
+   */
   private void viewMutuals(Stage stage, TableView<Person> tableMain, Person mainUser) {
-    TableColumn<Person, Void> goToPageCol = new TableColumn("Mutual Friends");
+    TableColumn<Person, Void> goToPageCol = new TableColumn("Mutuals");
 
     Callback<TableColumn<Person, Void>, TableCell<Person, Void>> cell =
         new Callback<TableColumn<Person, Void>, TableCell<Person, Void>>() {
@@ -875,9 +851,4 @@ public class Main extends Application {
 
     tableMain.getColumns().add(goToPageCol);
   }
-
-  String log = "";
-  Button goodbye = new Button("Exiting without saving, Goodbye");
-  Button goodbyeSave = new Button("Successful Save");
 }
-
