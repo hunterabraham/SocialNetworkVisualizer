@@ -134,7 +134,7 @@ public class Main extends Application {
     Label loadLabel = new Label("Load New File ");
 
     TextField loadText = new TextField();
-    loadText.setPromptText("example.txt or just click cubmit");
+    loadText.setText("example.txt or just click cubmit");
 
     loadLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     Button submitFile = new Button("Submit");
@@ -189,7 +189,16 @@ public class Main extends Application {
       public void handle(ActionEvent e) {
         previous.add(stage.getScene());
         if (!loadText.getText().equals("")) {
-          loadFile(loadText.getText());
+          if (!loadFile(loadText.getText())) {
+            Label errorLabel =
+                new Label("EXCEPTION OCCURED WITH READING FILE TRY DIFFERENT FILE");
+            errorLabel.setStyle("-fx-background-color: red");
+            errorLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            Stage errorMessage = new Stage();
+            Scene errorScene = new Scene(errorLabel);
+            errorMessage.setScene(errorScene);
+            errorMessage.show();
+          }
         } else {
           stage.setScene(loginScene);
         }
@@ -234,6 +243,12 @@ public class Main extends Application {
           network.createNewAccount(newUserTextField.getText());
         } catch (Exception q) {
           newUserTextField.setText("name not valid");
+          Label errorLabel =
+              new Label("a username may only contain letters, digits, underscore, apostrophe");
+          Stage errorMessage = new Stage();
+          Scene errorScene = new Scene(errorLabel);
+          errorMessage.setScene(errorScene);
+          errorMessage.show();
         }
         if (centralUser.equals("")) {
           centralUser = newUserTextField.getText();
@@ -451,23 +466,24 @@ public class Main extends Application {
     images.setFitWidth(400);
     Image picture = new Image("me.png");
     images.setImage(picture);
-    home.setCenter(images);
+    home.setCenter(tableMain);
 
-    VBox vbox = new VBox(); // Side panel
-    vbox.setPadding(new Insets(10));
-    vbox.setSpacing(8);
-    vbox.setStyle("-fx-background-color: darkblue ");
+    VBox homeVbox = new VBox(); // Side panel
+    homeVbox.setPadding(new Insets(10));
+    homeVbox.setSpacing(8);
+    homeVbox.setStyle("-fx-background-color: darkblue ");
 
     Text title = new Text("Friends");
     title.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     title.setFill(Color.WHITE);
-    vbox.getChildren().add(title);
+    homeVbox.getChildren().add(title);
 
     Button viewFriends = new Button("View Friends"); // Load a list of users friends
     viewFriends.setStyle("-fx-background-color: white");
     viewFriends.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(viewFriends, new Insets(0, 0, 0, 8));
-    vbox.getChildren().add(viewFriends); // Possibly add a small friends scene to show their pages
+  //  homeVbox.getChildren().add(viewFriends); // Possibly add a small friends scene to show their
+                                             // pages
     // Also add a back button
 
     // Scene five to show friends
@@ -514,7 +530,7 @@ public class Main extends Application {
     addFriend.setStyle("-fx-background-color: white");
     addFriend.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(addFriend, new Insets(0, 0, 0, 8));
-    vbox.getChildren().add(addFriend); // add new scene
+    homeVbox.getChildren().add(addFriend); // add new scene
 
 
     BorderPane addFriends = new BorderPane();
@@ -563,14 +579,12 @@ public class Main extends Application {
 
     Scene addFriendsScene = new Scene(addFriends, 450, 450);
 
-
-
     Button removeFr = new Button("Remove Friend"); // Go to scene with list of friends
     // and delete from it
     removeFr.setStyle("-fx-background-color: white");
     removeFr.setFont(Font.font("Arial", FontWeight.BOLD, 12));
     VBox.setMargin(removeFr, new Insets(0, 0, 0, 8));
-    vbox.getChildren().add(removeFr); // add new scene
+    homeVbox.getChildren().add(removeFr); // add new scene
 
 
 
@@ -598,6 +612,12 @@ public class Main extends Application {
     vList_2.getChildren().addAll(tableMainRemove);
     tableMainRemove.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
 
+    Button allUsers = new Button("All Users"); // Load a list of users friends
+    allUsers.setStyle("-fx-background-color: white");
+    allUsers.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+    VBox.setMargin(allUsers, new Insets(0, 0, 0, 8));
+    homeVbox.getChildren().add(allUsers);
+
     Button backButtonOtherTwo = new Button("BACK");
     backButtonOtherTwo.setStyle("-fx-background-color: red");
     backButtonOtherTwo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -608,12 +628,14 @@ public class Main extends Application {
     remove.setRight(new Label("ADS"));
     remove.setBottom(backButtonOtherTwo);
 
-    home.setLeft(vbox);
+    home.setLeft(homeVbox);
     home.setBottom(backButton);
+    home.setCenter(vList);
 
     Scene userScene = new Scene(home, 500, 500);
     stage.setScene(userScene);
 
+    // These are all the event handlers for the buttons
 
     EventHandler<ActionEvent> viewFriendsEvent = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -671,6 +693,28 @@ public class Main extends Application {
       }
     };
     removeFr.setOnAction(removeFriendEvent);
+
+    EventHandler<ActionEvent> allFriendsEvent = new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        Label userNumber = new Label(Integer.toString(network.string().size()));
+        userNumber.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        BorderPane allUserPane = new BorderPane();
+        allUserPane.setTop(userNumber);
+        allUserPane.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+        allUserPane.setAlignment(userNumber, Pos.CENTER);
+        ArrayList<String> all = network.string();
+        ComboBox<String> allUser = new ComboBox<String>(FXCollections.observableArrayList(all));
+
+        allUserPane.setCenter(allUser);
+
+        Scene allFriendsScene = new Scene(allUserPane, 200, 200);
+        Stage stage = new Stage();
+        stage.setScene(allFriendsScene);
+        stage.show();
+      }
+    };
+    allUsers.setOnAction(allFriendsEvent);
+
   }
 
   /**
@@ -725,7 +769,7 @@ public class Main extends Application {
    * 
    * @param fileName name of file to be loaded
    */
-  private void loadFile(String fileName) {
+  private boolean loadFile(String fileName) {
     try {
       FileReader file = new FileReader(fileName);
       Scanner sc = new Scanner(file);
@@ -765,12 +809,13 @@ public class Main extends Application {
         data = sc.nextLine().trim().split(" ");
       }
     } catch (DuplicateNameException e1) {
-
+      return false;
       // e1.printStackTrace();
     } catch (Exception e1) {
-
+      return false;
       // e1.printStackTrace();
     }
+    return true;
   }
 
 
@@ -797,14 +842,15 @@ public class Main extends Application {
 
                   VBox vbox = new VBox();
                   vbox.setPadding(new Insets(10));
-                  vbox.setStyle("-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
+                  vbox.setStyle(
+                      "-fx-background-color: linear-gradient(to bottom , CYAN, ROYALBLUE)");
                   Text title = new Text("Mutual Friends");
                   title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
                   title.setFill(Color.BLACK);
                   vbox.getChildren().add(title);
 
                   vbox.getChildren().add(mutualFriends);
-                  
+
                   Scene mutualScene = new Scene(vbox, 200, 350);
                   Stage stageTwo = new Stage();
                   stageTwo.setScene(mutualScene);
